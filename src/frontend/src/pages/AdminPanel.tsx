@@ -29,6 +29,7 @@ import { useActor } from "../hooks/useActor";
 import { formatINR } from "../utils/format";
 
 const ADMIN_AUTH_KEY = "regenix_admin_auth";
+const AUTHORIZED_ADMIN_EMAIL = "mukherjeeanubhav417@gmail.com";
 
 function formatDate(ts: bigint) {
   return new Date(Number(ts) / 1_000_000).toLocaleDateString("en-IN", {
@@ -252,6 +253,206 @@ function StripeConfigPanel({ actor }: { actor: any }) {
   );
 }
 
+// Google SVG logo
+function GoogleLogo() {
+  return (
+    <svg
+      role="img"
+      aria-label="Google"
+      width="18"
+      height="18"
+      viewBox="0 0 18 18"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <g>
+        <path
+          d="M17.64 9.205c0-.639-.057-1.252-.164-1.841H9v3.481h4.844a4.14 4.14 0 0 1-1.796 2.716v2.259h2.908c1.702-1.567 2.684-3.875 2.684-6.615z"
+          fill="#4285F4"
+        />
+        <path
+          d="M9 18c2.43 0 4.467-.806 5.956-2.18l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 0 0 9 18z"
+          fill="#34A853"
+        />
+        <path
+          d="M3.964 10.71A5.41 5.41 0 0 1 3.682 9c0-.593.102-1.17.282-1.71V4.958H.957A8.996 8.996 0 0 0 0 9c0 1.452.348 2.827.957 4.042l3.007-2.332z"
+          fill="#FBBC05"
+        />
+        <path
+          d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 0 0 .957 4.958L3.964 7.29C4.672 5.163 6.656 3.58 9 3.58z"
+          fill="#EA4335"
+        />
+      </g>
+    </svg>
+  );
+}
+
+function AdminLoginGate({ onAuth }: { onAuth: () => void }) {
+  const [showEmailInput, setShowEmailInput] = useState(false);
+  const [email, setEmail] = useState("");
+  const [loginError, setLoginError] = useState("");
+
+  const handleGoogleClick = () => {
+    setShowEmailInput(true);
+    setLoginError("");
+  };
+
+  const handleSignIn = () => {
+    if (email.trim().toLowerCase() === AUTHORIZED_ADMIN_EMAIL) {
+      localStorage.setItem(ADMIN_AUTH_KEY, "true");
+      onAuth();
+    } else {
+      setLoginError(
+        "Access denied. This admin panel is restricted to authorized personnel only.",
+      );
+    }
+  };
+
+  return (
+    <div className="min-h-screen pt-20 flex items-center justify-center px-4">
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="w-full max-w-sm"
+      >
+        {/* Brand header */}
+        <div className="text-center mb-8">
+          <div className="inline-flex items-center gap-1 mb-2">
+            <span className="font-display font-black text-2xl text-primary mint-text-glow">
+              Re
+            </span>
+            <span className="font-display font-black text-2xl text-foreground">
+              Genix
+            </span>
+          </div>
+          <p className="text-xs text-muted-foreground font-mono tracking-widest uppercase">
+            Admin Console
+          </p>
+        </div>
+
+        <div
+          className="bg-card border border-border rounded-2xl p-8 space-y-6"
+          style={{ boxShadow: "0 0 40px rgba(0,255,180,0.06)" }}
+        >
+          {/* Lock icon + heading */}
+          <div className="flex flex-col items-center gap-3 pb-2">
+            <div className="w-14 h-14 rounded-full bg-primary/10 border border-primary/25 flex items-center justify-center">
+              <svg
+                role="img"
+                aria-label="Lock"
+                width="26"
+                height="26"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.8"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className="text-primary"
+              >
+                <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+                <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+              </svg>
+            </div>
+            <div className="text-center">
+              <h2 className="font-display font-bold text-lg text-foreground">
+                Admin Console
+              </h2>
+              <p className="text-xs text-muted-foreground mt-0.5">
+                Restricted access — authorized personnel only
+              </p>
+            </div>
+          </div>
+
+          <AnimatePresence mode="wait">
+            {!showEmailInput ? (
+              <motion.div
+                key="google-btn"
+                initial={{ opacity: 0, y: 6 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -6 }}
+              >
+                <button
+                  type="button"
+                  data-ocid="admin.google.primary_button"
+                  onClick={handleGoogleClick}
+                  className="w-full flex items-center justify-center gap-3 bg-white text-gray-700 border border-gray-200 rounded-lg px-4 py-3 text-sm font-medium hover:bg-gray-50 hover:shadow-md transition-all duration-200 shadow-sm"
+                >
+                  <GoogleLogo />
+                  Continue with Google
+                </button>
+              </motion.div>
+            ) : (
+              <motion.div
+                key="email-input"
+                initial={{ opacity: 0, y: 6 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -6 }}
+                className="space-y-4"
+              >
+                <div className="space-y-2">
+                  <Label className="text-xs text-muted-foreground uppercase tracking-wide">
+                    Google Account Email
+                  </Label>
+                  <Input
+                    data-ocid="admin.email.input"
+                    type="email"
+                    placeholder="your@gmail.com"
+                    value={email}
+                    onChange={(e) => {
+                      setEmail(e.target.value);
+                      setLoginError("");
+                    }}
+                    onKeyDown={(e) => e.key === "Enter" && handleSignIn()}
+                    className="bg-secondary border-border text-foreground"
+                    autoFocus
+                  />
+                </div>
+
+                {loginError && (
+                  <motion.div
+                    initial={{ opacity: 0, scale: 0.97 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    data-ocid="admin.login.error_state"
+                    className="flex items-start gap-2 p-3 bg-destructive/10 border border-destructive/30 rounded-lg"
+                  >
+                    <span className="text-destructive text-xs leading-relaxed">
+                      🚫 {loginError}
+                    </span>
+                  </motion.div>
+                )}
+
+                <Button
+                  data-ocid="admin.login.submit_button"
+                  onClick={handleSignIn}
+                  className="w-full bg-primary text-primary-foreground font-semibold hover:bg-primary/90"
+                >
+                  Sign In
+                </Button>
+
+                <button
+                  type="button"
+                  onClick={() => {
+                    setShowEmailInput(false);
+                    setEmail("");
+                    setLoginError("");
+                  }}
+                  className="w-full text-xs text-muted-foreground hover:text-foreground transition-colors py-1"
+                >
+                  ← Back
+                </button>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
+
+        <p className="text-center text-xs text-muted-foreground/40 mt-6">
+          Unauthorized access attempts are logged.
+        </p>
+      </motion.div>
+    </div>
+  );
+}
+
 export function AdminPanel() {
   const { actor, isFetching } = useActor();
   const qc = useQueryClient();
@@ -259,10 +460,6 @@ export function AdminPanel() {
   const [isAuthed, setIsAuthed] = useState(() => {
     return localStorage.getItem(ADMIN_AUTH_KEY) === "true";
   });
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-  const [loginError, setLoginError] = useState("");
-  const [loginLoading, setLoginLoading] = useState(false);
 
   // Inventory state
   const [inventorySearch, setInventorySearch] = useState("");
@@ -322,30 +519,9 @@ export function AdminPanel() {
     onSuccess: () => qc.invalidateQueries({ queryKey: ["admin", "users"] }),
   });
 
-  const handleLogin = async () => {
-    if (!actor) return;
-    setLoginLoading(true);
-    setLoginError("");
-    try {
-      const ok = await (actor as any).verifyAdmin(username, password);
-      if (ok) {
-        localStorage.setItem(ADMIN_AUTH_KEY, "true");
-        setIsAuthed(true);
-      } else {
-        setLoginError("Invalid credentials. Please try again.");
-      }
-    } catch (_) {
-      setLoginError("Connection error. Please try again.");
-    } finally {
-      setLoginLoading(false);
-    }
-  };
-
   const handleLogout = () => {
     localStorage.removeItem(ADMIN_AUTH_KEY);
     setIsAuthed(false);
-    setUsername("");
-    setPassword("");
   };
 
   const filteredListings = listings.filter((l) => {
@@ -391,85 +567,7 @@ export function AdminPanel() {
   const maxBrandRev = Math.max(...Object.values(brandRevenue), 1);
 
   if (!isAuthed) {
-    return (
-      <div className="min-h-screen pt-20 flex items-center justify-center px-4">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="w-full max-w-sm"
-        >
-          <div className="text-center mb-8">
-            <div className="inline-flex items-center gap-1 mb-2">
-              <span className="font-display font-black text-2xl text-primary mint-text-glow">
-                Re
-              </span>
-              <span className="font-display font-black text-2xl text-foreground">
-                Genix
-              </span>
-            </div>
-            <p className="text-xs text-muted-foreground font-mono tracking-widest uppercase">
-              Admin Console
-            </p>
-          </div>
-
-          <div className="bg-card border border-border rounded-2xl p-8 card-glow space-y-5">
-            <div className="flex items-center gap-2 mb-2">
-              <span className="text-primary text-xl">🔐</span>
-              <h2 className="font-display font-bold text-lg text-foreground">
-                Secure Access
-              </h2>
-            </div>
-
-            <div className="space-y-2">
-              <Label className="text-xs text-muted-foreground uppercase tracking-wide">
-                Username
-              </Label>
-              <Input
-                data-ocid="admin.username.input"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-                placeholder="Admin username"
-                className="bg-secondary border-border text-foreground"
-                onKeyDown={(e) => e.key === "Enter" && handleLogin()}
-              />
-            </div>
-
-            <div className="space-y-2">
-              <Label className="text-xs text-muted-foreground uppercase tracking-wide">
-                Password
-              </Label>
-              <Input
-                data-ocid="admin.password.input"
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="••••••••"
-                className="bg-secondary border-border text-foreground"
-                onKeyDown={(e) => e.key === "Enter" && handleLogin()}
-              />
-            </div>
-
-            {loginError && (
-              <div
-                data-ocid="admin.login.error_state"
-                className="flex items-center gap-2 p-3 bg-destructive/10 border border-destructive/30 rounded-lg"
-              >
-                <span className="text-destructive text-sm">⚠ {loginError}</span>
-              </div>
-            )}
-
-            <Button
-              data-ocid="admin.login.submit_button"
-              onClick={handleLogin}
-              disabled={loginLoading || !actor}
-              className="w-full bg-primary text-primary-foreground font-semibold hover:bg-primary/90"
-            >
-              {loginLoading ? "Verifying..." : "Access Panel"}
-            </Button>
-          </div>
-        </motion.div>
-      </div>
-    );
+    return <AdminLoginGate onAuth={() => setIsAuthed(true)} />;
   }
 
   return (

@@ -78,14 +78,6 @@ export function Navbar() {
             Login
           </Link>
         )}
-
-        <Link
-          to="/admin"
-          data-ocid="nav.admin.link"
-          className="text-xs text-muted-foreground/50 hover:text-muted-foreground transition-colors"
-        >
-          Admin
-        </Link>
       </div>
     </nav>
   );
