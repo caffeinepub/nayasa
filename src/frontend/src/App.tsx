@@ -11,12 +11,18 @@ import { Footer } from "./components/Footer";
 import { Navbar } from "./components/Navbar";
 import { SellProvider } from "./context/SellContext";
 import { useActor } from "./hooks/useActor";
+import { AdminPanel } from "./pages/AdminPanel";
 import { Checkout } from "./pages/Checkout";
 import { Diagnose } from "./pages/Diagnose";
 import { Home } from "./pages/Home";
+import { Login } from "./pages/Login";
+import { PaymentFailure } from "./pages/PaymentFailure";
+import { PaymentSuccess } from "./pages/PaymentSuccess";
 import { ProductDetail } from "./pages/ProductDetail";
+import { ProfileSetup } from "./pages/ProfileSetup";
 import { Quote } from "./pages/Quote";
 import { Sell } from "./pages/Sell";
+import { Signup } from "./pages/Signup";
 
 function AppLayout() {
   const { actor } = useActor();
@@ -81,6 +87,42 @@ const quoteRoute = createRoute({
   component: Quote,
 });
 
+const loginRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: "/login",
+  component: Login,
+});
+
+const signupRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: "/signup",
+  component: Signup,
+});
+
+const profileSetupRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: "/profile-setup",
+  component: ProfileSetup,
+});
+
+const paymentSuccessRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: "/payment-success",
+  component: PaymentSuccess,
+});
+
+const paymentFailureRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: "/payment-failure",
+  component: PaymentFailure,
+});
+
+const adminRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: "/admin",
+  component: AdminPanel,
+});
+
 const routeTree = rootRoute.addChildren([
   homeRoute,
   listingRoute,
@@ -88,6 +130,12 @@ const routeTree = rootRoute.addChildren([
   sellRoute,
   diagnoseRoute,
   quoteRoute,
+  loginRoute,
+  signupRoute,
+  profileSetupRoute,
+  paymentSuccessRoute,
+  paymentFailureRoute,
+  adminRoute,
 ]);
 
 const router = createRouter({ routeTree });

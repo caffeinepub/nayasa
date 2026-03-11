@@ -118,7 +118,7 @@ export function ProductDetail() {
   const fallbackComponents = [
     {
       component: "Battery",
-      status: "NayaSa-Certified Replacement",
+      status: "ReGenix-Certified Replacement",
       date: "Jan 2026",
     },
     { component: "Display", status: "Original — Never Replaced", date: "" },
@@ -357,7 +357,7 @@ export function ProductDetail() {
                   </span>
                 </div>
                 <div className="flex justify-between text-sm">
-                  <span className="text-muted-foreground">NayaSa Price</span>
+                  <span className="text-muted-foreground">ReGenix Price</span>
                   <span className="font-bold text-foreground">
                     {formatINR(listing.naiasaPrice)}
                   </span>

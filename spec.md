@@ -1,36 +1,38 @@
 # NayaSa
 
 ## Current State
-New project. No existing code.
+- Login page exists at `/login` with Google and Phone (OTP) options
+- No separate Signup page; no `/signup` or `/profile-setup` routes
+- Checkout at `/checkout/$id` has full Indian payment UI (UPI, Card, Net Banking, Wallet) but payment is simulated — no real payment processing
+- App.tsx has routes for home, listing, checkout, sell, diagnose, quote, login, admin
+- Stripe component has been selected and backend bindings are available
 
 ## Requested Changes (Diff)
 
 ### Add
-- Full Buyer flow: Home page with brand filter, listing grid with Health Score badges, product detail with Flaw-Finder toggle + Component History Ledger + Savings Calculator, checkout with shipping selector and OBD checkboxes
-- Full Seller flow: Device entry form, 4-step simulated AI-Surgeon diagnostic suite (Acoustic, Thermal, Dead Pixel, Sensor), algorithmic quote page with countdown timer + market trend mini-graph, pickup slot selector
-- 10-15 seed listings (brand, model, storage, IMEI, battery health, condition grade, retail price, NayaSa price, component history, diagnostic results)
-- "Live from Warehouse" tally widget on home page
-- Dark luxury design: deep charcoal backgrounds, neon mint accents, Bento Grid layouts
+- `/signup` page with Google, Outlook (Microsoft), and Phone (OTP) sign-up options. Toggle link "Already have an account? Log in" links to `/login`
+- `/profile-setup` page: collects Name and Handle after sign-up, then redirects to home
+- Stripe real card payment flow in Checkout: when user selects "Debit / Credit Card", a "Pay with Stripe" button creates a Stripe checkout session via `actor.createCheckoutSession()` and redirects to Stripe-hosted payment page
+- `/payment-success` route and PaymentSuccess component: confirms order, shows Seal ID
+- `/payment-failure` route and PaymentFailure component: shows error, offers retry link back to checkout
+- Stripe admin configuration panel in AdminPanel: `isStripeConfigured()` check on admin login; if not configured, prompt to enter Stripe secret key and allowed countries via `setStripeConfiguration()`
+- `useCreateCheckoutSession` hook with proper JSON parsing and url validation
 
 ### Modify
-- N/A
+- `Login.tsx`: add Outlook (Microsoft) as a third sign-in option alongside Google and Phone. Add toggle link "Don't have an account? Sign up" pointing to `/signup`
+- `App.tsx`: add routes for `/signup`, `/profile-setup`, `/payment-success`, `/payment-failure`
+- `Checkout.tsx`: card payment option triggers Stripe checkout session creation and redirect instead of manual card form entry. Other methods (UPI, Net Banking, Wallet) remain simulated. Show loading state while Stripe session is being created.
 
 ### Remove
-- N/A
+- Manual card form (card number, expiry, CVV, name) from Checkout when card method is selected — replaced by Stripe redirect
 
 ## Implementation Plan
-
-1. **Backend (Motoko)**
-   - `Listing` type: id, brand, model, storage, imei, batteryHealth, conditionGrade, nayasaPrice, retailPrice, componentHistory (array of records), diagnosticResults, inStock
-   - `SellerSubmission` type: id, brand, model, storage, condition, diagnosticResults, quotedPrice, status, pickupSlot
-   - Queries: `getListings`, `getListing(id)`, `getListingsByBrand`
-   - Updates: `submitSellRequest`, `saveDiagnosticResult`
-   - Seed data: 12 listings across Apple, Samsung, OnePlus, Xiaomi, Google brands
-
-2. **Frontend Pages**
-   - `/` — Home: hero section, brand filter bento grid, listing grid, live warehouse tally
-   - `/listing/:id` — Product detail: 360 viewer simulation, Flaw-Finder toggle, component history, savings bar, checkout CTA
-   - `/checkout/:id` — Checkout: shipping selector, transparency checkboxes, order summary
-   - `/sell` — Sell entry: brand/model/storage/condition form
-   - `/sell/diagnose` — AI-Surgeon diagnostic suite: 4 animated tests with progress
-   - `/sell/quote` — Quote page: price ticker, countdown, market mini-graph, pickup slot selector
+1. Create `src/frontend/src/hooks/useCreateCheckoutSession.ts`
+2. Create `src/frontend/src/pages/Signup.tsx` mirroring Login structure with Google, Outlook, Phone OTP; redirects to `/profile-setup` after success
+3. Create `src/frontend/src/pages/ProfileSetup.tsx` with Name + Handle form, saves to localStorage and backend, redirects to `/`
+4. Create `src/frontend/src/pages/PaymentSuccess.tsx`
+5. Create `src/frontend/src/pages/PaymentFailure.tsx`
+6. Update `Login.tsx`: add Outlook button, add sign-up toggle link
+7. Update `Checkout.tsx`: replace card form with Stripe session trigger button
+8. Update `AdminPanel.tsx`: add Stripe configuration section
+9. Update `App.tsx`: register all new routes

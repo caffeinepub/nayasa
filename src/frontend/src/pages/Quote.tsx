@@ -199,7 +199,7 @@ export function Quote() {
             >
               <div className="text-center p-8 bg-card border border-primary/30 rounded-2xl">
                 <div className="text-sm text-muted-foreground mb-2">
-                  Your NayaSa Price
+                  Your ReGenix Price
                 </div>
                 <motion.div
                   initial={{ scale: 0.8, opacity: 0 }}

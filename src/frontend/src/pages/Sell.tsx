@@ -48,7 +48,7 @@ export function Sell() {
             </span>
           </div>
           <h1 className="font-display font-black text-4xl text-foreground mb-3">
-            Get Your NayaSa Price
+            Get Your ReGenix Price
             <br />
             <span className="text-primary">in 90 Seconds</span>
           </h1>

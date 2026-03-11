@@ -5,7 +5,7 @@ export function Footer() {
     <footer className="border-t border-border mt-24 py-10 px-6">
       <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
         <div className="font-display font-bold text-lg text-primary">
-          Naya<span className="text-foreground">Sa</span>
+          Re<span className="text-foreground">Genix</span>
         </div>
         <p className="text-xs text-muted-foreground text-center">
           &copy; {year}. Built with ❤️ using{" "}
@@ -20,7 +20,7 @@ export function Footer() {
         </p>
         <p className="text-xs text-muted-foreground">
           <span className="text-primary font-medium">
-            "Naya Jaisa Luck, Purane Jaisa Daam."
+            "The phone isn't just 'used,' it's 'regenerated.'"
           </span>
         </p>
       </div>
